@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    app: test
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      containers:
+      - name: test
+        image: node-hello:1.1
+        imagePullPolicy: Never
+        args: ["start"]
+        ports:
+        - containerPort: 3000

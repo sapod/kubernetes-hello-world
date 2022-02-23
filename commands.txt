@@ -1,0 +1,15 @@
+docker build -t node-hello:1.1 .
+docker run --name test -d -p 3000:3000 node-hello:1.1 start
+
+kind create cluster --config=cluster.yaml
+kind load docker-image node-hello:1.1
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+kubectl get pods -n ingress-nginx
+kubectl describe pod -n ingress-nginx ingress-nginx-controller-674cb6ff57-dxsx8
+
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+kubectl apply -f ingress.yaml
+
+kubectl get ingress -w
